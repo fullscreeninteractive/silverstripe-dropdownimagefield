@@ -68,7 +68,9 @@ class DropdownImageField extends FormField {
 	public function Field($properties = array()) {
                 $dirName = basename(dirname(dirname(__FILE__)));;
                 
+                Requirements::javascript($dirName.'/javascript/Polyfill.js');
 		Requirements::javascript($dirName.'/javascript/ImageSelect.jquery.js');
+                Requirements::css($dirName.'/css/ImageSelect.css');
                 
 		$source = $this->getSourceObject();
 		$options = array();
