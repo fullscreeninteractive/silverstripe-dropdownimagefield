@@ -159,6 +159,8 @@
 
                         if(img_src != undefined){
                             var template = html_template.replace('{url}',img_src);
+                            // SS uses a modified Chosen.js and after the 'showing_dropdown' event the 
+                            // values get immediatelly reset, also removing the images. Solved it with setTimeout.
                             setTimeout(function(li, template){
                                 $(li).prepend(template.replace('{class_name}','chose-image-list'));
                             }, 1, li, template);
