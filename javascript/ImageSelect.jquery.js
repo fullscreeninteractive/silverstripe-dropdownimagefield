@@ -7,6 +7,8 @@
 
 // MIT License, https://github.com/websemantics/Image-Select/blob/master/LICENSE
 
+// Modified for DropdownImageField
+
 (function($) {
 
     // Image template, this can be overridden from the constructor (options.template),
@@ -157,7 +159,7 @@
                         var option = options[i];
                         var img_src = $(option).attr('data-img-src');
 
-                        if(img_src != undefined){
+                        if(typeof img_src != undefined && img_src != ''){
                             var template = html_template.replace('{url}',img_src);
                             // SS uses a modified Chosen.js and after the 'showing_dropdown' event the 
                             // values get immediatelly reset, also removing the images. Solved it with setTimeout.
