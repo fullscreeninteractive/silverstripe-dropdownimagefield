@@ -86,7 +86,12 @@ class DropdownImageField extends FormField {
 
 			foreach($source as $item) {
                                 $value = $item->{$this->keyField};
-                                $title = $item->{$this->labelField};
+                                if (empty($this->labelField)) {
+                                    $title = '--nbsp';
+                                } else {
+                                    $title = $item->{$this->labelField};
+                                }
+                                
                                 $image = $item->{$this->imageField}();
                                 
 				$selected = false;
