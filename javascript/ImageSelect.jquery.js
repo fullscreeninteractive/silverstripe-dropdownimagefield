@@ -152,7 +152,7 @@
                     // _chosen: Object {chosen:Chosen}
                     //      Contains the current instance of Chosen class
                     var lis = $(chosen.container).find('.chzn-drop ul li')
-                    var options = $(chosen.form_field).find('optgroup, option');
+                    var options = $(chosen.form_field).find('optgroup, option:not(:empty)');
                     
                     for(var i = 0; i < lis.length; i++){
                         var li = lis[i];

@@ -26,7 +26,7 @@ class DropdownImageField extends DropdownField {
 		$source = $this->getSource();
 		$options = array();
 		if($source) {
-			if(is_object($source) && $this->emptyString) {
+			if(is_object($source) && $this->hasEmptyDefault) {
 				$options[] = new ArrayData(array(
 					'Value' => '',
 					'Title' => $this->emptyString,
