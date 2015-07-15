@@ -79,15 +79,11 @@ class DropdownImageField extends DropdownField {
 	}
 	
 	/**
-	 * Gets the source array including any empty default values.
+	 * Gets the source
 	 * 
-	 * @return array
+	 * @return Object
 	 */
-	public function getSourceObject() {
-		if(is_object($this->source) && $this->getHasEmptyDefault()) {
-                        return $this->source->unshift(array($this->keyField = '', $this->labelField = $this->emptyString, $this->imageField = ''));
-		} else {
-			return $this->source;
-		}
+	public function getSource() {
+            return $this->source;
 	}
 }

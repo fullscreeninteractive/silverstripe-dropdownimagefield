@@ -2,7 +2,7 @@
 	"name": "copperis/dropdownimagefield",
 	"description": "Dropdown field with image support for SilverStripe CMS",
 	"type": "silverstripe-module",
-	"keywords": ["silverstripe", "dropdown", "image"],
+	"keywords": ["silverstripe", "dropdown", "image", "field"],
 	"license": "MIT",
 	"support": {
 		"issues": "http://github.com/Copperis/DropdownImageField/issues"
