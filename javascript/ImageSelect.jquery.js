@@ -153,21 +153,21 @@
                     //      Contains the current instance of Chosen class
                     var lis = $(chosen.container).find('.chzn-drop ul li')
                     var options = $(chosen.form_field).find('optgroup, option:not(:empty)');
-                    
-                    for(var i = 0; i < lis.length; i++){
-                        var li = lis[i];
-                        var option = options[i];
-                        var img_src = $(option).attr('data-img-src');
 
-                        if(typeof img_src != 'undefined' && img_src != ''){
-                            var template = html_template.replace('{url}',img_src);
-                            // SS uses a modified Chosen.js and after the 'showing_dropdown' event the 
-                            // values get immediatelly reset, also removing the images. Solved it with setTimeout.
-                            setTimeout(function(li, template){
+                    // SS uses a modified Chosen.js and after the 'showing_dropdown' event the 
+                    // values get immediatelly reset, also removing the images. Solved it with setTimeout.
+                    setTimeout(function(lis, options){
+                        for(var i = 0; i < lis.length; i++){
+                            var li = lis[i];
+                            var option = options[i];
+                            var img_src = $(option).attr('data-img-src');
+
+                            if(typeof img_src != 'undefined' && img_src != ''){
+                                var template = html_template.replace('{url}',img_src);
                                 $(li).prepend(template.replace('{class_name}','chose-image-list'));
-                            }, 1, li, template);
+                            }
                         }
-                    }
+                    }, 1, lis, options);
                 });
               });
             $this.trigger('liszt:hiding_dropdown');
