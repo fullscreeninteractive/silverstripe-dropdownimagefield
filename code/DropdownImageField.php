@@ -80,15 +80,6 @@ class DropdownImageField extends DropdownField {
     }
 
     /**
-     * Gets the source
-     * 
-     * @return Object
-     */
-    public function getSource() {
-        return $this->source;
-    }
-
-    /**
      * Get the source of this field as an array
      * Transform the source DataList to an key => value array
      *
