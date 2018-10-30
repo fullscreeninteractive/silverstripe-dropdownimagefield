@@ -1,5 +1,13 @@
 <?php
 
+namespace Copperis\DropdownImageField;
+
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\ArrayData;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\Forms\FormField;
+
 class DropdownImageField extends DropdownField {
 
     protected $keyField, $labelField, $imageField;
@@ -20,9 +28,9 @@ class DropdownImageField extends DropdownField {
         $dirName = basename(dirname(dirname(__FILE__)));
         ;
 
-        Requirements::javascript($dirName . '/javascript/Polyfill.js');
-        Requirements::javascript($dirName . '/javascript/ImageSelect.jquery.js');
-        Requirements::css($dirName . '/css/ImageSelect.css');
+        Requirements::javascript('Copperis\DropdownImageField: javascript/Polyfill.js');
+        Requirements::javascript('Copperis\DropdownImageField: javascript/ImageSelect.jquery.js');
+        Requirements::css('Copperis\DropdownImageField: css/ImageSelect.css');
 
         $source = $this->getSource();
         $options = array();
@@ -90,7 +98,7 @@ class DropdownImageField extends DropdownField {
         if (is_array($source)) {
             return $source;
         }
-        
+
         return $source->map($this->keyField, $this->labelField)->toArray();
     }
 
