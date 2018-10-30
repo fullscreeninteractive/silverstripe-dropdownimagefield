@@ -28,9 +28,9 @@ class DropdownImageField extends DropdownField {
         $dirName = basename(dirname(dirname(__FILE__)));
         ;
 
-        Requirements::javascript('Copperis\DropdownImageField: javascript/Polyfill.js');
-        Requirements::javascript('Copperis\DropdownImageField: javascript/ImageSelect.jquery.js');
-        Requirements::css('Copperis\DropdownImageField: css/ImageSelect.css');
+        Requirements::javascript('copperis/dropdownimagefield: javascript/Polyfill.js');
+        Requirements::javascript('copperis/dropdownimagefield: javascript/ImageSelect.jquery.js');
+        Requirements::css('copperis/dropdownimagefield: css/ImageSelect.css');
 
         $source = $this->getSource();
         $options = array();
