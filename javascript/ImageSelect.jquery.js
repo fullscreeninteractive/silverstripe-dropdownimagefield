@@ -63,12 +63,10 @@
                             var text = $(option).text();
 
                             if(selected && img_src){
-
                                 var template = html_template.replace('{url}',img_src);
-
                                 if(spans.length){
                                     for (var j = 0; j < spans.length; j++)
-                                        if(text == $(spans[j]).text()){
+                                        if(text === $(spans[j]).text()){
                                             $(spans[j]).prepend(template.replace('{class_name}','chose-image'));
                                         }
                                 } else {
@@ -103,14 +101,14 @@
                     var chosen = self.chosen;
                     var options = chosen.form_field.options;
 
-                    if(selected != undefined && selected.selected != undefined && options && options.length){
+                    if(selected !== undefined && selected.selected !== undefined && options && options.length){
 
                         for(var i = 0 ; i < options.length; i++){
                             var option = options[i];
                             var value =  ($(option).attr('value')) ? $(option).attr('value') : $(option).text();
                             var img_src = $(option).attr('data-img-src');
 
-                            if(img_src != undefined && selected.selected == value){
+                            if(img_src !== undefined && selected.selected === value){
                                 var template = html_template.replace('{url}',img_src);
 
                                 // For multiple selection
@@ -175,32 +173,16 @@
                     var lis = $(_chosen.chosen.container).find('.chosen-drop ul li')
                     var options = $(_chosen.chosen.form_field).find('optgroup, option:not(:empty)');
 
-                    // SS uses a modified Chosen.js and after the 'showing_dropdown' event the
-                    // values get immediatelly reset, also removing the images. Solved it with setTimeout.
-
                     for(var i = 0; i < lis.length; i++){
                         var li = lis[i];
                         var option = options[i];
                         var img_src = $(option).attr('data-img-src');
 
-                        if(typeof img_src != 'undefined' && img_src != ''){
+                        if(typeof img_src !== 'undefined' && img_src !== ''){
                             var template = html_template.replace('{url}',img_src);
                             $(li).prepend(template.replace('{class_name}','chose-image-list'));
                         }
                     }
-
-                    /*                    setTimeout(function(lis, options){
-                                            for(var i = 0; i < lis.length; i++){
-                                                var li = lis[i];
-                                                var option = options[i];
-                                                var img_src = $(option).attr('data-img-src');
-
-                                                if(typeof img_src != 'undefined' && img_src != ''){
-                                                    var template = html_template.replace('{url}',img_src);
-                                                    $(li).prepend(template.replace('{class_name}','chose-image-list'));
-                                                }
-                                            }
-                                        }, 1, lis, options);*/
                 });
             });
             $this.trigger('chosen:hiding_dropdown');
