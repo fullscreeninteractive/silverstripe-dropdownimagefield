@@ -36,11 +36,11 @@ class DropdownImageField extends DropdownField {
         $options = array();
         if ($source) {
             if (is_object($source) && $this->hasEmptyDefault) {
-                $options[] = new ArrayData(array(
+                $options[] = new ArrayData([
                     'Value' => '',
                     'Title' => $this->emptyString,
                     'Image' => ''
-                ));
+                ]);
             }
 
             foreach ($source as $item) {
@@ -72,17 +72,19 @@ class DropdownImageField extends DropdownField {
                     $disabled = 'disabled';
                 }
 
-                $options[] = new ArrayData(array(
+                $options[] = new ArrayData([
                     'Title' => $title,
                     'Value' => $value,
                     'Image' => $image,
                     'Selected' => $selected,
                     'Disabled' => $disabled,
-                ));
+                ]);
             }
         }
 
-        $properties = array_merge($properties, array('Options' => new ArrayList($options)));
+        $properties = array_merge($properties, [
+            'Options' => new ArrayList($options)
+        ]);
 
         return FormField::Field($properties);
     }
