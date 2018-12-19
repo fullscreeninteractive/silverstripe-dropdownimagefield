@@ -11,8 +11,10 @@
 		"silverstripe/framework": "^4",
 		"silverstripe/cms": "^4"
 	},
-    "expose": [
-        "css",
-        "javascript"
-    ]
+    "extra": {
+        "expose": [
+            "css",
+            "javascript"
+        ]
+    }
 }
