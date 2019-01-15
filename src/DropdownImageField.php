@@ -1,6 +1,6 @@
 <?php
 
-namespace Copperis\DropdownImageField;
+namespace FullscreenInteractive\DropdownImageField;
 
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\View\Requirements;
