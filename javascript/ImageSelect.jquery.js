@@ -18,7 +18,7 @@
     // Store the original 'chosen' method
     var fn_chosen = $.fn.chosen;
 
-      $.fn.extend({
+    $.fn.extend({
         // summery:
         //  Extend the original 'chosen' method to support images
 
@@ -28,22 +28,32 @@
 
             var html_template = options.html_template || fn_template;
 
+            var self = this;
+
             // Attach Ready event before continue with chose
             this.each(function(input_field) {
 
                 $this = $(this);
 
-                $this.on("liszt:ready", function change(e, chosen){
-
+                $this.on("chosen:ready", function change(e, chosen){
                     chosen = chosen.chosen;
+
+                    // The change event handler used further down doesn't pass in the chosen object so we need to store this for later.
+                    self.chosen = chosen;
+
+                    // The ready event is being triggered twice so ensure we only handle it once
+                    if (self.readyEventTriggered) {
+                        return;
+                    } else {
+                        self.readyEventTriggered = true;
+                    }
 
                     var form_field = chosen.form_field;
 
                     var options = form_field.options;
-                    var spans = $(chosen.container).find('.chzn-choices span');
+                    var spans = $(chosen.container).find('.chosen-choices span');
 
-
-                      if(options && options.length){
+                    if(options && options.length){
 
                         for(var i = 0 ; i < options.length; i++){
 
@@ -53,23 +63,21 @@
                             var text = $(option).text();
 
                             if(selected && img_src){
-
-                              var template = html_template.replace('{url}',img_src);
-
-                              if(spans.length){
-                                for (var j = 0; j < spans.length; j++)
-                                  if(text == $(spans[j]).text()){
-                                    $(spans[j]).prepend(template.replace('{class_name}','chose-image'));
-                                  }
+                                var template = html_template.replace('{url}',img_src);
+                                if(spans.length){
+                                    for (var j = 0; j < spans.length; j++)
+                                        if(text === $(spans[j]).text()){
+                                            $(spans[j]).prepend(template.replace('{class_name}','chose-image'));
+                                        }
                                 } else {
-                                  $(chosen.container).find('.chzn-single span').prepend(template.replace('{class_name}','chose-image-small'));
+                                    $(chosen.container).find('.chosen-single span').prepend(template.replace('{class_name}','chose-image-small'));
                                 }
                             }
 
                         }
                     }
 
-               });
+                });
             });
 
             // original behavior - use function.apply to preserve context
@@ -77,11 +85,9 @@
 
             this.each(function(input_field) {
 
-                var $this, chosen;
+                var $this;
 
                 $this = $(this);
-
-                chosen = $this.data('chosen');
 
                 $this.on("change", function change(evt,selected){
                     // summery
@@ -91,25 +97,27 @@
                     // selected: Object
                     //      Contains the value of the selected
                     //
+
+                    var chosen = self.chosen;
                     var options = chosen.form_field.options;
 
-                    if(selected != undefined && selected.selected != undefined && options && options.length){
+                    if(selected !== undefined && selected.selected !== undefined && options && options.length){
 
                         for(var i = 0 ; i < options.length; i++){
                             var option = options[i];
                             var value =  ($(option).attr('value')) ? $(option).attr('value') : $(option).text();
                             var img_src = $(option).attr('data-img-src');
 
-                            if(img_src != undefined && selected.selected == value){
+                            if(img_src !== undefined && selected.selected === value){
                                 var template = html_template.replace('{url}',img_src);
 
                                 // For multiple selection
-                                span = $(chosen.container).find('.chzn-choices span').last()
+                                span = $(chosen.container).find('.chosen-choices span').last()
                                 span.find('img').remove()
                                 span.prepend(template.replace('{class_name}','chose-image'));
 
                                 // For single select
-                                span = $(chosen.container).find('.chzn-single span')
+                                span = $(chosen.container).find('.chosen-single span')
                                 span.find('img').remove()
                                 span.prepend(template.replace('{class_name}','chose-image-small'));
                             }
@@ -117,9 +125,12 @@
                     }
                 });
 
-                $this.on("liszt:hiding_dropdown", function(e, _c){
-
-                    var options  = chosen.form_field.options;
+                $this.on("chosen:hiding_dropdown", function(e, chosen){
+                    if (!chosen) {
+                        return;
+                    }
+                    chosen = chosen.chosen;
+                    var options  = chosen.form_field; //.options;
 
                     var selected = $(chosen.form_field).find(':selected');
 
@@ -132,17 +143,17 @@
                     var template = html_template.replace('{url}',img_src);
 
                     // For multiple selection
-                    span = $(chosen.container).find('.chzn-choices span').last()
+                    span = $(chosen.container).find('.chosen-choices span').last()
                     span.find('img').remove()
                     span.prepend(template.replace('{class_name}','chose-image'));
 
                     // For single select
-                    span = $(chosen.container).find('.chzn-single span')
+                    span = $(chosen.container).find('.chosen-single span')
                     span.find('img').remove()
                     span.prepend(template.replace('{class_name}','chose-image-small'));
                 })
 
-                $this.on("liszt:showing_dropdown", function showing_dropdown(evt, _chosen){
+                $this.on("chosen:showing_dropdown", function showing_dropdown(evt, _chosen){
                     // summery
                     //      This function is triggered when the chosen instance dropdown list becomes visible
                     //  For Chose custom events: http://forwebonly.com/jquery-chosen-custom-events-and-how-to-use-them/
@@ -151,28 +162,36 @@
                     //      The event object
                     // _chosen: Object {chosen:Chosen}
                     //      Contains the current instance of Chosen class
-                    var lis = $(chosen.container).find('.chzn-drop ul li')
-                    var options = $(chosen.form_field).find('optgroup, option:not(:empty)');
 
-                    // SS uses a modified Chosen.js and after the 'showing_dropdown' event the 
-                    // values get immediatelly reset, also removing the images. Solved it with setTimeout.
-                    setTimeout(function(lis, options){
-                        for(var i = 0; i < lis.length; i++){
-                            var li = lis[i];
-                            var option = options[i];
-                            var img_src = $(option).attr('data-img-src');
+                    // Ensure images have not already been processed (occurs because this dropdown event seems to be
+                    // triggered twice.
+                    var hasImage = $(_chosen.chosen.container).find('.chosen-drop ul li img');
+                    if (hasImage.length > 0) {
+                        return;
+                    }
 
-                            if(typeof img_src != 'undefined' && img_src != ''){
-                                var template = html_template.replace('{url}',img_src);
-                                $(li).prepend(template.replace('{class_name}','chose-image-list'));
-                            }
+                    var lis = $(_chosen.chosen.container).find('.chosen-drop ul li')
+                    var options = $(_chosen.chosen.form_field).find('optgroup, option:not(:empty)');
+
+                    for(var i = 0; i < lis.length; i++){
+                        var li = lis[i];
+                        var option = options[i];
+                        var img_src = $(option).attr('data-img-src');
+
+                        if(typeof img_src !== 'undefined' && img_src !== ''){
+                            var template = html_template.replace('{url}',img_src);
+                            $(li).prepend(template.replace('{class_name}','chose-image-list'));
                         }
-                    }, 1, lis, options);
+                    }
                 });
-              });
-            $this.trigger('liszt:hiding_dropdown');
+            });
+
+            if (typeof $this !== 'undefined') {
+                $this.trigger('chosen:hiding_dropdown');
+            }
+
             return ret;
         }
-      });
+    });
 
 })(jQuery);

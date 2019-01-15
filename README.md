@@ -5,6 +5,10 @@ Uses a plugin for Chosen.js (which is used by SS), [Image-Select](https://github
 
 ![Working screenshot](https://github.com/Copperis/DropdownImageField/raw/master/docs/img/ss.png)
 
+## Requirements
+
+SilverStripe 4.0+
+
 ## Usage
 
 Example:

@@ -1,5 +1,13 @@
 <?php
 
+namespace Copperis\DropdownImageField;
+
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\ArrayData;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\Forms\FormField;
+
 class DropdownImageField extends DropdownField {
 
     protected $keyField, $labelField, $imageField;
@@ -18,21 +26,15 @@ class DropdownImageField extends DropdownField {
     public function Field($properties = array()) {
 
         $dirName = basename(dirname(dirname(__FILE__)));
-        ;
-
-        Requirements::javascript($dirName . '/javascript/Polyfill.js');
-        Requirements::javascript($dirName . '/javascript/ImageSelect.jquery.js');
-        Requirements::css($dirName . '/css/ImageSelect.css');
-
         $source = $this->getSource();
         $options = array();
         if ($source) {
             if (is_object($source) && $this->hasEmptyDefault) {
-                $options[] = new ArrayData(array(
+                $options[] = new ArrayData([
                     'Value' => '',
                     'Title' => $this->emptyString,
                     'Image' => ''
-                ));
+                ]);
             }
 
             foreach ($source as $item) {
@@ -64,17 +66,19 @@ class DropdownImageField extends DropdownField {
                     $disabled = 'disabled';
                 }
 
-                $options[] = new ArrayData(array(
+                $options[] = new ArrayData([
                     'Title' => $title,
                     'Value' => $value,
                     'Image' => $image,
                     'Selected' => $selected,
                     'Disabled' => $disabled,
-                ));
+                ]);
             }
         }
 
-        $properties = array_merge($properties, array('Options' => new ArrayList($options)));
+        $properties = array_merge($properties, [
+            'Options' => new ArrayList($options)
+        ]);
 
         return FormField::Field($properties);
     }
@@ -90,7 +94,7 @@ class DropdownImageField extends DropdownField {
         if (is_array($source)) {
             return $source;
         }
-        
+
         return $source->map($this->keyField, $this->labelField)->toArray();
     }
 
