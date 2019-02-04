@@ -4,7 +4,7 @@ Name: dropdownimagefield
 
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_javascript:
-    - 'fullscreeninteractive/dropdownimagefield:javascript/Polyfill.js'
-    - 'fullscreeninteractive/dropdownimagefield:javascript/ImageSelect.jquery.js'
+    - 'fullscreeninteractive/silverstripe-dropdownimagefield:javascript/Polyfill.js'
+    - 'fullscreeninteractive/silverstripe-dropdownimagefield:javascript/ImageSelect.jquery.js'
   extra_requirements_css:
-    - 'fullscreeninteractive/dropdownimagefield:css/ImageSelect.css'
+    - 'fullscreeninteractive/silverstripe-dropdownimagefield:css/ImageSelect.css'
