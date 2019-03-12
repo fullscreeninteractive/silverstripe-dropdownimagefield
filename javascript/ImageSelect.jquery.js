@@ -32,7 +32,6 @@
 
             // Attach Ready event before continue with chose
             this.each(function(input_field) {
-
                 $this = $(this);
 
                 $this.on("chosen:ready", function change(e, chosen){
@@ -52,7 +51,6 @@
 
                     var options = form_field.options;
                     var spans = $(chosen.container).find('.chosen-choices span');
-
                     if(options && options.length){
 
                         for(var i = 0 ; i < options.length; i++){

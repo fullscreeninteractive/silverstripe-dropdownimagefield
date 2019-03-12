@@ -6,11 +6,18 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\ArrayData;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\SS_List;
 use SilverStripe\Forms\FormField;
 
 class DropdownImageField extends DropdownField {
 
-    protected $keyField, $labelField, $imageField;
+    protected $keyField = 'ID';
+
+    protected $labelField = 'Title';
+
+    protected $imageField = 'Image';
+
+    protected $sourceObject;
 
     public function __construct($name, $title, $sourceObject, $keyField = 'ID', $labelField = 'Title', $imageField = 'Image', $value = '', $form = null) {
 
@@ -21,13 +28,29 @@ class DropdownImageField extends DropdownField {
         parent::__construct($name, ($title === null) ? $name : $title, $sourceObject, $value, $form);
 
         $this->addExtraClass('dropdown');
+        $this->sourceObject = $sourceObject;
+    }
+
+    public function setSourceObject(SS_List $source)
+    {
+        $this->sourceObject = $source;
+
+        return $this;
+    }
+
+    public function setImageField($field)
+    {
+        $this->imageField = $field;
+
+        return $this;
     }
 
     public function Field($properties = array()) {
 
         $dirName = basename(dirname(dirname(__FILE__)));
-        $source = $this->getSource();
+        $source = $this->sourceObject;
         $options = array();
+
         if ($source) {
             if (is_object($source) && $this->hasEmptyDefault) {
                 $options[] = new ArrayData([
@@ -37,15 +60,21 @@ class DropdownImageField extends DropdownField {
                 ]);
             }
 
-            foreach ($source as $item) {
-                $value = $item->{$this->keyField};
-                if (empty($this->labelField)) {
-                    $title = '--nbsp';
-                } else {
-                    $title = $item->{$this->labelField};
-                }
+            foreach ($source as $k => $item) {
+                if (is_object($item)) {
+                    $value = $item->{$this->keyField};
+                    if (empty($this->labelField)) {
+                        $title = '--nbsp';
+                    } else {
+                        $title = $item->{$this->labelField};
+                    }
 
-                $image = $item->{$this->imageField}();
+                    $image = $item->{$this->imageField}();
+                } else {
+                    $value = $k;
+                    $image = null;
+                    $title = $item;
+                }
 
                 $selected = false;
                 if ($value === '' && ($this->value === '' || $this->value === null)) {
