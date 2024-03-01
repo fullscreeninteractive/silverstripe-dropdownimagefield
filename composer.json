@@ -8,12 +8,11 @@
         "issues": "http://github.com/fullscreeninteractive/silverstripe-dropdownimagefield/issues"
     },
     "require": {
-        "silverstripe/framework": "^4",
-        "silverstripe/cms": "^4"
+        "silverstripe/framework": "^4 || ^5"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-main": "1.x-dev"
         },
         "expose": [
             "css",
