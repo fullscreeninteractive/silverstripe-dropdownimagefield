@@ -3,13 +3,13 @@
 namespace FullscreenInteractive\DropdownImageField;
 
 use SilverStripe\Forms\DropdownField;
-use SilverStripe\View\Requirements;
-use SilverStripe\View\ArrayData;
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\Forms\FormField;
+use SilverStripe\Model\ArrayData;
+use SilverStripe\Model\List\ArrayList;
 
-class DropdownImageField extends DropdownField {
+class DropdownImageField extends DropdownField
+{
 
     protected $keyField = 'ID';
 
@@ -19,7 +19,8 @@ class DropdownImageField extends DropdownField {
 
     protected $sourceObject;
 
-    public function __construct($name, $title, $sourceObject, $keyField = 'ID', $labelField = 'Title', $imageField = 'Image', $value = '', $form = null) {
+    public function __construct($name, $title, $sourceObject, $keyField = 'ID', $labelField = 'Title', $imageField = 'Image', $value = '', $form = null)
+    {
 
         $this->keyField = $keyField;
         $this->labelField = $labelField;
@@ -31,7 +32,7 @@ class DropdownImageField extends DropdownField {
         $this->sourceObject = $sourceObject;
     }
 
-    public function setSourceObject(SS_List $source)
+    public function setSourceObject($source)
     {
         $this->sourceObject = $source;
 
@@ -45,15 +46,14 @@ class DropdownImageField extends DropdownField {
         return $this;
     }
 
-    public function Field($properties = array()) {
-
-        $dirName = basename(dirname(dirname(__FILE__)));
+    public function Field($properties = [])
+    {
         $source = $this->sourceObject;
         $options = array();
 
         if ($source) {
             if (is_object($source) && $this->hasEmptyDefault) {
-                $options[] = new ArrayData([
+                $options[] = ArrayData::create([
                     'Value' => '',
                     'Title' => $this->emptyString,
                     'Image' => ''
@@ -95,7 +95,7 @@ class DropdownImageField extends DropdownField {
                     $disabled = 'disabled';
                 }
 
-                $options[] = new ArrayData([
+                $options[] = ArrayData::create([
                     'Title' => $title,
                     'Value' => $value,
                     'Image' => $image,
@@ -106,7 +106,7 @@ class DropdownImageField extends DropdownField {
         }
 
         $properties = array_merge($properties, [
-            'Options' => new ArrayList($options)
+            'Options' => ArrayList::create($options)
         ]);
 
         return FormField::Field($properties);
@@ -118,7 +118,8 @@ class DropdownImageField extends DropdownField {
      *
      * @return array
      */
-    public function getSourceAsArray() {
+    public function getSourceAsArray()
+    {
         $source = $this->getSource();
         if (is_array($source)) {
             return $source;
@@ -126,5 +127,4 @@ class DropdownImageField extends DropdownField {
 
         return $source->map($this->keyField, $this->labelField)->toArray();
     }
-
 }

@@ -7,9 +7,16 @@ Uses a plugin for Chosen.js (which is used by SS), [Image-Select](https://github
 
 ## Requirements
 
-SilverStripe 4.0+
+SilverStripe 6
+
+## Install
+
+```sh
+composer require fullscreeninteractive/silverstripe-dropdownimagefield
+```
 
 ## Usage
+
 
 Example:
 
@@ -24,4 +31,4 @@ DropdownImageField::create('LanguageID', 'Select language',
 
 ## Notes
 
-This plugin uses a `setTimeout` function with additional parameters. A polyfill is loaded to support IE9 and lower.
+This plugin uses a `setTimeout` function with additional parameters.

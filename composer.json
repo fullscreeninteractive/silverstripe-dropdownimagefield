@@ -8,15 +8,21 @@
         "issues": "http://github.com/fullscreeninteractive/silverstripe-dropdownimagefield/issues"
     },
     "require": {
-        "silverstripe/framework": "^4 || ^5"
+        "silverstripe/framework": "^6"
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "1.x-dev"
+            "dev-main": "2.x-dev"
         },
         "expose": [
             "css",
             "javascript"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "silverstripe/vendor-plugin": true
+        }
     }
 }
