@@ -3,41 +3,49 @@
 namespace FullscreenInteractive\DropdownImageField;
 
 use SilverStripe\Forms\DropdownField;
-use SilverStripe\ORM\SS_List;
-use SilverStripe\Forms\FormField;
 use SilverStripe\Model\ArrayData;
 use SilverStripe\Model\List\ArrayList;
 
 class DropdownImageField extends DropdownField
 {
+    protected string $keyField = 'ID';
 
-    protected $keyField = 'ID';
+    protected string $labelField = 'Title';
 
-    protected $labelField = 'Title';
+    protected string $imageField = 'Image';
 
-    protected $imageField = 'Image';
+    protected ArrayList $sourceList;
 
-    protected $sourceObject;
-
-    public function __construct($name, $title, $sourceObject, $keyField = 'ID', $labelField = 'Title', $imageField = 'Image', $value = '', $form = null)
+    public function __construct($name, $title = null, $source = [], $value = null)
     {
-
-        $this->keyField = $keyField;
-        $this->labelField = $labelField;
-        $this->imageField = $imageField;
-
-        parent::__construct($name, ($title === null) ? $name : $title, $sourceObject, $value, $form);
+        parent::__construct($name, $title, $source, $value);
 
         $this->addExtraClass('dropdown');
-        $this->sourceObject = $sourceObject;
     }
 
-    public function setSourceObject($source)
+
+    public function setSourceList(ArrayList $sourceList)
     {
-        $this->sourceObject = $source;
+        $this->sourceList = $sourceList;
 
         return $this;
     }
+
+
+    public function setKeyField(string $field)
+    {
+        $this->keyField = $field;
+
+        return $this;
+    }
+
+    public function setLabelField(string $field)
+    {
+        $this->labelField = $field;
+
+        return $this;
+    }
+
 
     public function setImageField($field)
     {
@@ -46,85 +54,68 @@ class DropdownImageField extends DropdownField
         return $this;
     }
 
-    public function Field($properties = [])
+
+    public function getSourceList()
     {
-        $source = $this->sourceObject;
-        $options = array();
+        return $this->sourceList;
+    }
 
-        if ($source) {
-            if (is_object($source) && $this->hasEmptyDefault) {
-                $options[] = ArrayData::create([
-                    'Value' => '',
-                    'Title' => $this->emptyString,
-                    'Image' => ''
-                ]);
-            }
 
-            foreach ($source as $k => $item) {
-                if (is_object($item)) {
-                    $value = $item->{$this->keyField};
-                    if (empty($this->labelField)) {
-                        $title = '--nbsp';
-                    } else {
-                        $title = $item->{$this->labelField};
-                    }
+    public function getSourceEmpty()
+    {
+        $source = [];
 
+        foreach ($this->getSourceList() as $k => $item) {
+            if ($item instanceof ArrayData) {
+                $value = $item->{$this->keyField};
+
+                if (empty($this->labelField)) {
+                    $title = '--nbsp';
+                } else {
+                    $title = $item->{$this->labelField};
+                }
+                if (method_exists($item, $this->imageField)) {
                     $image = $item->{$this->imageField}();
                 } else {
-                    $value = $k;
-                    $image = null;
-                    $title = $item;
+                    $image = $item->{$this->imageField};
                 }
-
-                $selected = false;
-                if ($value === '' && ($this->value === '' || $this->value === null)) {
-                    $selected = true;
-                } else {
-                    // check against value, fallback to a type check comparison when !value
-                    if ($value) {
-                        $selected = ($value == $this->value);
-                    } else {
-                        $selected = ($value === $this->value) || (((string) $value) === ((string) $this->value));
-                    }
-
-                    $this->isSelected = $selected;
-                }
-
-                $disabled = false;
-                if (in_array($value, $this->disabledItems) && $title != $this->emptyString) {
-                    $disabled = 'disabled';
-                }
-
-                $options[] = ArrayData::create([
-                    'Title' => $title,
-                    'Value' => $value,
-                    'Image' => $image,
-                    'Selected' => $selected,
-                    'Disabled' => $disabled,
-                ]);
+            } else {
+                $value = $k;
+                $image = null;
+                $title = $item;
             }
+
+            $source[$value] = $title . ' (image: ' . $image . ')';
+        }
+
+        return $source;
+    }
+
+
+
+    /**
+     * @param array $properties
+     * @return string
+     */
+    public function Field($properties = [])
+    {
+        $options = [];
+
+        // Add all options
+        foreach ($this->getSourceEmpty() as $value => $title) {
+            $options[] = $this->getFieldOption($value, $title);
         }
 
         $properties = array_merge($properties, [
             'Options' => ArrayList::create($options)
         ]);
 
-        return FormField::Field($properties);
+        return parent::Field($properties);
     }
 
-    /**
-     * Get the source of this field as an array
-     * Transform the source DataList to an key => value array
-     *
-     * @return array
-     */
-    public function getSourceAsArray()
-    {
-        $source = $this->getSource();
-        if (is_array($source)) {
-            return $source;
-        }
 
-        return $source->map($this->keyField, $this->labelField)->toArray();
+    public function getSourceValues()
+    {
+        return array_keys($this->getSourceEmpty());
     }
 }
