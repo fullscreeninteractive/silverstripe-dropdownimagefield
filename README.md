@@ -1,4 +1,4 @@
-# DropdownImageField
+# SilverStripe DropdownImageField
 
 Adds a `DropdownImageField` field which enables you to display images alongside the captions.
 Uses a plugin for Chosen.js (which is used by SS), [Image-Select](https://github.com/websemantics/Image-Select). The plugin is modified.
@@ -21,14 +21,30 @@ composer require fullscreeninteractive/silverstripe-dropdownimagefield
 Example:
 
 ```php
-DropdownImageField::create('LanguageID', 'Select language',
-	LanguageObj::get(), // Source for items.
-	'ID',		// Key field on item.
-	'Title',	// Caption field on item.
-	'Icon'		// Image field on item. Can be a method/relation that returns an image.
-)
+DropdownImageField::create('Icon', 'Select icon')
+    ->setSourceList($this->getAvailableIcons())
+
+...
+    /**
+     * Get the available icons for the dropdown
+     *
+     * @return ArrayList<ArrayData>
+     */
+    public function getAvailableIcons(): ArrayList
+    {
+        $list = ArrayList::create();
+        $icons = [
+            'car' => '/_resources/app/images/car.svg'
+        ];
+    
+        foreach ($icons as $key => $value) {
+            $list->push(ArrayData::create([
+                'ID' => $key,
+                'Title' => $key,
+                'Image' => $value
+            ]));
+        }
+
+        return $list;
+    }
 ```
-
-## Notes
-
-This plugin uses a `setTimeout` function with additional parameters.
